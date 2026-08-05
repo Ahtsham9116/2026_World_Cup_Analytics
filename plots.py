@@ -1163,32 +1163,47 @@ def player_details(player, country, position):
 
     )
 
+    # --- Position-specific colour palette ---
+    palette_map = {
+        "FW": {"Player": "#D62728", "Average": "#99C2E8"},    # red / light blue
+        "MF": {"Player": "#2E86AB", "Average": "#A8D8EA"},    # teal / sky
+        "DF": {"Player": "#56B4E9", "Average": "#D6EAF8"},    # blue / ice
+        "GK": {"Player": "#E6A817", "Average": "#FDEBD0"},    # gold / cream
+    }
+    palette = palette_map.get(position, {"Player": "#1f77b4", "Average": "#AEC7E8"})
+
     g = sns.catplot(
-
         data=plot_df,
-
         x="Type",
-
         y="Value",
-
         hue="Type",
-
         col="Stat",
-
         kind="bar",
-
         col_wrap=3,
+        sharey=False,
+        palette=palette,
+        height=3.8,
+        aspect=0.85,
+    )
 
-        sharey=False
+    # Polish subplots
+    for ax in g.axes.flat:
+        ax.set_xlabel("")
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.tick_params(axis="x", labelsize=9)
+        ax.tick_params(axis="y", labelsize=8)
 
+    g.figure.suptitle(
+        f"{player} — {position} Performance vs Position Average",
+        fontsize=16,
+        fontweight="bold",
+        y=1.02,
     )
 
     return (
-
         player_stats,
-
         g.figure
-
     )
 
 
@@ -1277,32 +1292,40 @@ def team_details(country):
     ]
     
 
+    # --- Team-specific colour palette ---
+    palette = {"Team": "#274482", "Average": "#BCC8DC"}
+
     g = sns.catplot(
-
         data=plot_df,
-
         x="Type",
-
         y="Value",
-
         hue="Type",
-
         col="Stat",
-
         kind="bar",
-
         col_wrap=3,
+        sharey=False,
+        palette=palette,
+        height=4.2,
+        aspect=0.85,
+    )
 
-        sharey=False
+    # Polish subplots
+    for ax in g.axes.flat:
+        ax.set_xlabel("")
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.tick_params(axis="x", labelsize=10)
+        ax.tick_params(axis="y", labelsize=9)
 
+    g.figure.suptitle(
+        f"{country} — Performance vs Tournament Average",
+        fontsize=16,
+        fontweight="bold",
+        y=1.02,
     )
 
     return (
-
-
         team_stats,
-
         g.figure
-
     )
 

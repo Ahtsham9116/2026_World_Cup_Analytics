@@ -125,12 +125,15 @@ section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] h3 {
     font-weight: 700;
     color: #0F172A;
     letter-spacing: -0.02em;
+    margin-top: 8px;
     margin-bottom: 4px;
+    line-height: 1.25;
 }
 .page-subtitle {
     font-size: 15px;
     color: #64748B;
     font-weight: 400;
+    margin-top: 4px;
     margin-bottom: 18px;
 }
 
@@ -175,8 +178,10 @@ div[data-testid="stAlertInfo"] {
     font-size: 18px;
     font-weight: 700;
     color: #0F172A;
+    margin-top: 8px;
     margin-bottom: 12px;
     letter-spacing: -0.01em;
+    line-height: 1.3;
 }
 
 /* ---------- Hero text ---------- */
