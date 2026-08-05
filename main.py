@@ -160,6 +160,25 @@ div[data-testid="stAlertInfo"] {
     line-height: 1.7;
 }
 
+.insight-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #274482;
+    letter-spacing: -0.01em;
+}
+
+/* ---------- H2H section labels ---------- */
+.h2h-player-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
 /* ---------- Hero text ---------- */
 .hero-title {
     font-size: 42px;
@@ -397,11 +416,18 @@ elif page == "Head-to-Head":
 
         pos = st.selectbox("Position", ["FW", "MF", "DF", "GK"])
 
+        DEFAULT_P1_COUNTRY = "FRA"
+        DEFAULT_P2_COUNTRY = "ARG"
+
         c1, c2 = st.columns(2)
 
         with c1:
-            st.markdown('<div class="page-title" style="font-size:18px;">Player 1</div>', unsafe_allow_html=True)
-            country1 = st.selectbox("Country", countries, key="country1")
+            st.markdown('<div class="h2h-player-label">Player 1</div>', unsafe_allow_html=True)
+            country1 = st.selectbox(
+                "Country", countries,
+                index=list(countries).index(DEFAULT_P1_COUNTRY) if DEFAULT_P1_COUNTRY in countries else 0,
+                key="country1"
+            )
             player1 = st.selectbox(
                 "Player",
                 p.all_data[(p.all_data["Position"] == pos) & (p.all_data["Country"] == country1)]["Player"],
@@ -409,8 +435,12 @@ elif page == "Head-to-Head":
             )
 
         with c2:
-            st.markdown('<div class="page-title" style="font-size:18px;">Player 2</div>', unsafe_allow_html=True)
-            country2 = st.selectbox("Country", countries, key="country2")
+            st.markdown('<div class="h2h-player-label">Player 2</div>', unsafe_allow_html=True)
+            country2 = st.selectbox(
+                "Country", countries,
+                index=list(countries).index(DEFAULT_P2_COUNTRY) if DEFAULT_P2_COUNTRY in countries else 1,
+                key="country2"
+            )
             player2 = st.selectbox(
                 "Player",
                 p.all_data[(p.all_data["Position"] == pos) & (p.all_data["Country"] == country2)]["Player"],
@@ -436,10 +466,21 @@ elif page == "Head-to-Head":
 
     else:
 
+        DEFAULT_T1 = "FRA"
+        DEFAULT_T2 = "BRA"
+
         c1, c2 = st.columns(2)
 
-        country1 = c1.selectbox("Team 1", countries, key="team1")
-        country2 = c2.selectbox("Team 2", countries, key="team2")
+        country1 = c1.selectbox(
+            "Team 1", countries,
+            index=list(countries).index(DEFAULT_T1) if DEFAULT_T1 in countries else 0,
+            key="team1"
+        )
+        country2 = c2.selectbox(
+            "Team 2", countries,
+            index=list(countries).index(DEFAULT_T2) if DEFAULT_T2 in countries else 1,
+            key="team2"
+        )
 
         st.divider()
 
@@ -550,4 +591,29 @@ else:
             with zoom_col:
                 st.caption("Tip: hover the chart and click the ⛶ icon in its top-right corner to view it full-screen/zoomed in.")
 
-            st.markdown(f'<div class="insight-text">{analysis}</div>', unsafe_allow_html=True)
+            # Split "**Analysis:** ..." into a styled heading + body
+            raw = analysis.strip()
+            if raw.startswith("**Analysis:**"):
+                after_marker = raw[len("**Analysis:**"):].strip()
+                # Find the first sentence boundary (period or em-dash) after a reasonable length
+                split_at = None
+                for sep in [".", "\u2014", "\u2013"]:
+                    pos_sep = after_marker.find(sep)
+                    if pos_sep > 15:
+                        if split_at is None or pos_sep < split_at:
+                            split_at = pos_sep
+                if split_at is not None:
+                    heading_text = after_marker[:split_at + 1].strip()
+                    body_text = after_marker[split_at + 1:].strip()
+                    st.markdown(
+                        f'<div class="insight-heading">{heading_text}</div>',
+                        unsafe_allow_html=True
+                    )
+                    st.markdown(
+                        f'<div class="insight-text">{body_text}</div>',
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.markdown(f'<div class="insight-text">{raw}</div>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<div class="insight-text">{raw}</div>', unsafe_allow_html=True)
