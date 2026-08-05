@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import matplotlib.pyplot as plt
 import plots as p
+import re
 
 # ---- Page config ----
 st.set_page_config(
@@ -600,13 +601,9 @@ else:
             raw = analysis.strip()
             if raw.startswith("**Analysis:**"):
                 after_marker = raw[len("**Analysis:**"):].strip()
-                # Find the first sentence boundary (period or em-dash) after a reasonable length
-                split_at = None
-                for sep in [".", "\u2014", "\u2013"]:
-                    pos_sep = after_marker.find(sep)
-                    if pos_sep > 15:
-                        if split_at is None or pos_sep < split_at:
-                            split_at = pos_sep
+                # Prefer a real sentence boundary: punctuation followed by whitespace and a capital letter.
+                match = re.search(r'([.!?])\s+(?=[A-Z])', after_marker)
+                split_at = match.end() - 1 if match else None
                 if split_at is not None:
                     heading_text = after_marker[:split_at + 1].strip()
                     body_text = after_marker[split_at + 1:].strip()
