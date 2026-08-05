@@ -1170,40 +1170,65 @@ def player_details(player, country, position):
         "DF": {"Player": "#56B4E9", "Average": "#D6EAF8"},    # blue / ice
         "GK": {"Player": "#E6A817", "Average": "#FDEBD0"},    # gold / cream
     }
-    palette = palette_map.get(position, {"Player": "#1f77b4", "Average": "#AEC7E8"})
+    colors = palette_map.get(position, {"Player": "#1f77b4", "Average": "#AEC7E8"})
 
-    g = sns.catplot(
-        data=plot_df,
-        x="Type",
-        y="Value",
-        hue="Type",
-        col="Stat",
-        kind="bar",
-        col_wrap=3,
-        sharey=False,
-        palette=palette,
-        height=3.8,
-        aspect=0.85,
+    # --- Grouped horizontal bar chart (single clean layout) ---
+    fig, ax = plt.subplots(figsize=(10, 3.2 * len(selected_stats)))
+
+    stats = plot_df[plot_df["Type"] == "Player"]["Stat"].tolist()
+    player_vals = plot_df[plot_df["Type"] == "Player"]["Value"].tolist()
+    avg_vals = plot_df[plot_df["Type"] == "Average"]["Value"].tolist()
+
+    y_pos = range(len(stats))
+    bar_width = 0.35
+
+    bars_player = ax.barh(
+        [y - bar_width / 2 for y in y_pos],
+        player_vals,
+        bar_width,
+        label="Player",
+        color=colors["Player"],
+    )
+    bars_avg = ax.barh(
+        [y + bar_width / 2 for y in y_pos],
+        avg_vals,
+        bar_width,
+        label="Position Avg",
+        color=colors["Average"],
     )
 
-    # Polish subplots
-    for ax in g.axes.flat:
-        ax.set_xlabel("")
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.tick_params(axis="x", labelsize=9)
-        ax.tick_params(axis="y", labelsize=8)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(stats, fontsize=12)
+    ax.invert_yaxis()
+    ax.set_xlabel("", fontsize=13, fontweight="bold")
 
-    g.figure.suptitle(
-        f"{player} — {position} Performance vs Position Average",
-        fontsize=16,
+    # Value labels on bars
+    for bar in bars_player:
+        w = bar.get_width()
+        if w > 0:
+            ax.text(w + max(ax.get_xlim()) * 0.01, bar.get_y() + bar.get_height() / 2,
+                    f"{w:.1f}", va="center", fontsize=9, color=colors["Player"])
+    for bar in bars_avg:
+        w = bar.get_width()
+        if w > 0:
+            ax.text(w + max(ax.get_xlim()) * 0.01, bar.get_y() + bar.get_height() / 2,
+                    f"{w:.1f}", va="center", fontsize=9, color="#555555")
+
+    ax.legend(fontsize=12, loc="lower right")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.set_title(
+        f"{player} ({position}) — Performance vs Position Average",
+        fontsize=15,
         fontweight="bold",
-        y=1.02,
+        pad=16,
     )
+
+    plt.tight_layout()
 
     return (
         player_stats,
-        g.figure
+        fig
     )
 
 
@@ -1293,39 +1318,63 @@ def team_details(country):
     
 
     # --- Team-specific colour palette ---
-    palette = {"Team": "#274482", "Average": "#BCC8DC"}
+    team_color = "#274482"
+    avg_color = "#BCC8DC"
 
-    g = sns.catplot(
-        data=plot_df,
-        x="Type",
-        y="Value",
-        hue="Type",
-        col="Stat",
-        kind="bar",
-        col_wrap=3,
-        sharey=False,
-        palette=palette,
-        height=4.2,
-        aspect=0.85,
+    stats = plot_df[plot_df["Type"] == "Team"]["Stat"].tolist()
+    team_vals = plot_df[plot_df["Type"] == "Team"]["Value"].tolist()
+    avg_vals = plot_df[plot_df["Type"] == "Average"]["Value"].tolist()
+
+    fig, ax = plt.subplots(figsize=(10, 3.2 * len(stats)))
+
+    y_pos = range(len(stats))
+    bar_width = 0.35
+
+    bars_team = ax.barh(
+        [y - bar_width / 2 for y in y_pos],
+        team_vals,
+        bar_width,
+        label="Team",
+        color=team_color,
+    )
+    bars_avg = ax.barh(
+        [y + bar_width / 2 for y in y_pos],
+        avg_vals,
+        bar_width,
+        label="Tournament Avg",
+        color=avg_color,
     )
 
-    # Polish subplots
-    for ax in g.axes.flat:
-        ax.set_xlabel("")
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.tick_params(axis="x", labelsize=10)
-        ax.tick_params(axis="y", labelsize=9)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(stats, fontsize=12)
+    ax.invert_yaxis()
 
-    g.figure.suptitle(
+    # Value labels on bars
+    for bar in bars_team:
+        w = bar.get_width()
+        if w > 0:
+            ax.text(w + max(ax.get_xlim()) * 0.01, bar.get_y() + bar.get_height() / 2,
+                    f"{w:.1f}", va="center", fontsize=9, color=team_color)
+    for bar in bars_avg:
+        w = bar.get_width()
+        if w > 0:
+            ax.text(w + max(ax.get_xlim()) * 0.01, bar.get_y() + bar.get_height() / 2,
+                    f"{w:.1f}", va="center", fontsize=9, color="#555555")
+
+    ax.legend(fontsize=12, loc="lower right")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.set_title(
         f"{country} — Performance vs Tournament Average",
-        fontsize=16,
+        fontsize=15,
         fontweight="bold",
-        y=1.02,
+        pad=16,
     )
+
+    plt.tight_layout()
 
     return (
         team_stats,
-        g.figure
+        fig
     )
 
