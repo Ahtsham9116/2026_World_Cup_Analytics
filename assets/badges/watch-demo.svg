@@ -1,0 +1,10 @@
+<svg width="200" height="48" viewBox="0 0 200 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Watch demo GIF">
+  <defs>
+    <linearGradient id="watchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#274482"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="198" height="46" rx="10" fill="url(#watchGrad)" stroke="#1B2A4A" stroke-width="1"/>
+  <text x="100" y="30" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">&#127909;&#160; Watch Demo</text>
+</svg>

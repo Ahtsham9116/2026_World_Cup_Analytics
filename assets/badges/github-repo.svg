@@ -1,0 +1,10 @@
+<svg width="200" height="48" viewBox="0 0 200 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="View source on GitHub">
+  <defs>
+    <linearGradient id="repoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="198" height="46" rx="10" fill="url(#repoGrad)" stroke="#334155" stroke-width="1"/>
+  <text x="100" y="30" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">&#9733;&#160; View on GitHub</text>
+</svg>
