@@ -198,7 +198,6 @@ This project was built collaboratively, with a clear split between analysis and 
 | Exploratory Data Analysis (EDA) | Dashboard Integration |
 | Statistical Analysis | Deployment |
 | Data Visualization | |
-| Documentation | |
 
 ## 🙌 Contributing
 
